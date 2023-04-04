@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "GetData";
+}
+
+<h2>GetData</h2>
+
+<div class="col-md-12">
+    <div class="col-md-6">
+        <form>
+            <label>EmpName</label>
+            <input type="text" id="EmpName" value="" class="form-control" /><br />
+            <label>EmpSalary</label>
+            <input type="text" id="EmpSalary" value="" class="form-control" /><br />
+            <button class="btn btn-success" onclick="SaveEmployee()">Save</button>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <table id="table-1" class="table table-bordered">
+            <tr>
+                <th>Srno</th>
+                <th>EmpId</th>
+                <th>EmpName</th>
+                <th>EmpSalary</th>
+                <th>Action</th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+
+<script>
+
+    $.ajax({
+        url: "https://localhost:44382/api/employeeDetailsApi",
+        dataType:"json",
+        type: "GET",
+        success: function (result) {
+            $.each(result, function (i, key) {
+
+                $('#table-1 tr:last').after("<tr><td>"+(i+1)+"</td><td>"+key.EmpId+"</td><td>"+key.EmpName+"</td><td>"+key.EmpSalary+"</td><td><a class='btn btn-success'>Edit</a></td></tr>");
+                
+            })
+        }
+
+
+    })
+// save Employee Record
+
+    function SaveEmployee() {
+
+        $.ajax({
+            url: "https://localhost:44382/api/employeeDetailsApi",
+            dataType: "json",
+            type: "Post",
+
+            data: {
+                EmpName: $('#EmpName').val(),
+                EmpSalary: $('#EmpSalary').val()
+            },
+
+            success: function (result) {
+                debugger;
+            }
+
+
+        })
+
+
+         
+        
+
+    }
+</script>
