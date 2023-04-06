@@ -8,6 +8,7 @@
 <div class="col-md-12">
     <div class="col-md-6">
         <form>
+            <input type="hidden" id="EmpId" value=""/><br />
             <label>EmpName</label>
             <input type="text" id="EmpName" value="" class="form-control" /><br />
             <label>EmpSalary</label>
@@ -42,7 +43,7 @@
         success: function (result) {
             $.each(result, function (i, key) {
 
-                $('#table-1 tr:last').after("<tr><td>"+(i+1)+"</td><td>"+key.EmpId+"</td><td>"+key.EmpName+"</td><td>"+key.EmpSalary+"</td><td><a class='btn btn-success'>Edit</a></td></tr>");
+                $('#table-1 tr:last').after("<tr><td>" + (i + 1) + "</td><td>" + key.EmpId + "</td><td>" + key.EmpName + "</td><td>" + key.EmpSalary + "</td><td><a class='btn btn-success' onclick='EditEmployeeById(" + key.EmpId + ")'>Edit</a><a class='btn btn-warning' onclick='DeleteEmployee(" + key.EmpId +")'>Delete</a></td></tr>");
                 
             })
         }
@@ -53,12 +54,73 @@
 
     function SaveEmployee() {
 
+        if ($('#EmpId').val() == "") {
+            $.ajax({
+                url: "https://localhost:44382/api/employeeDetailsApi",
+                dataType: "json",
+                type: "Post",
+
+                data: {
+                    EmpName: $('#EmpName').val(),
+                    EmpSalary: $('#EmpSalary').val()
+                },
+
+                success: function (result) {
+                    alert("Saved Successfully")
+                }
+
+
+            })
+        }
+        else {
+
+            EditEmployee();
+
+        }
+
+
+         
+        
+
+    }
+
+    //To GetRecord
+    function EditEmployeeById(eid) {
+        
+
+       
+
         $.ajax({
-            url: "https://localhost:44382/api/employeeDetailsApi",
+            url: "https://localhost:44382/api/employeeDetailsApi?id="+eid,
             dataType: "json",
-            type: "Post",
+            type: "GET",
+
+            success: function (result) {
+                console.log(result);
+                $('#EmpId').val(result.EmpId),
+                $('#EmpName').val(result.EmpName),
+                $('#EmpSalary').val(result.EmpSalary)
+            }
+
+
+        })
+
+
+
+
+
+    }
+
+    ////To Modify the record
+    function EditEmployee() {
+
+        $.ajax({
+            url: "https://localhost:44382/api/employeeDetailsApi?id=" + $('#EmpId').val(),
+            dataType: "json",
+            type: "PUT",
 
             data: {
+                EmpId: $('#EmpId').val(),
                 EmpName: $('#EmpName').val(),
                 EmpSalary: $('#EmpSalary').val()
             },
@@ -71,8 +133,29 @@
         })
 
 
-         
-        
+
+
 
     }
+
+    function DeleteEmployee(eid) {
+
+        $.ajax({
+            url: "https://localhost:44382/api/employeeDetailsApi?id=" + eid,
+            dataType: "json",
+            type: "DELETE",
+
+            success: function (result) {
+                alert("Deleted Successfully")
+            }
+
+
+        })
+
+
+
+
+
+    }
+
 </script>
